@@ -1,7 +1,6 @@
-# 2020_security
-Repository to keep track of my goal
+# 2020_WYT_PLATFORM
 
-WYT api used for backend WYT application
+WYT api used for backend WYT application (source code can be downloaded from here: <TBA>)
 
 basically used as a platform for user to share their interesting thoughts like "line app open discussion features" 
 
