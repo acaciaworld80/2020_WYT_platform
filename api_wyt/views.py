@@ -31,6 +31,14 @@ def thought_list(request):
 			return JSONResponse(thoughts_serializer_data.data,status = status.HTTP_201_CREATED)
 		return JSONResponse(thoughts_serializer_data.errors,status = status.HTTP_400_BAD_REQUEST)
 
-	
+def thought_details(request,pk)	:
+	try:
+		thoughts_data = thoughts.objects.get(pk=pk)
+	except:
+		return HTTPResponse(status=status.HTTP_404_NOT_FOUND)
+
+	if request.method == 'GET':
+		thoughts_serializer_data = thoughts_serializer(thoughts_data)
+		return JSONResponse(thoughts_serializer_data.data)
 						
 	
