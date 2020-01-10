@@ -13,3 +13,5 @@ To do list:
   - 08/01/2020
       -> fix JSON parser error
       -> update serializers to use ModelSerializer
+  - 10/01/2020
+      -> update views.py to use rest_framework library for handling user response and unallowed http method
