@@ -1,22 +1,13 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from api_wyt.models import thoughts
 from api_wyt.serializers import thoughts_serializer
 
 # Create your views here.
 
-class JSONResponse(HttpResponse):
-	def __init__(self,data,**kwargs):
-		content=JSONRenderer().render(data)
-		kwargs["content_type"] = "application/json"
-		super(JSONResponse,self).__init__(content,**kwargs)
-
-
-@csrf_exempt
+@api_view(['GET','POST'])
 def thought_list(request):
 	if request.method == "GET":
 		thoughts_content = thoughts.objects.values('created','title','author')
@@ -24,21 +15,21 @@ def thought_list(request):
 		return JSONResponse(thoughts_serializer_data.data)
 
 	elif request.method == "POST":
-		thoughts_content = JSONParser().parse(request)
-		thoughts_serializer_data = thoughts_serializer(data = thoughts_content)
+		thoughts_serializer_data = thoughts_serializer(data = request.data)
 		if thoughts_serializer_data.is_valid():
 			thoughts_serializer_data.save()
-			return JSONResponse(thoughts_serializer_data.data,status = status.HTTP_201_CREATED)
-		return JSONResponse(thoughts_serializer_data.errors,status = status.HTTP_400_BAD_REQUEST)
+			return Response(thoughts_serializer_data.data,status = status.HTTP_201_CREATED)
+		return Response(thoughts_serializer_data.errors,status = status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
 def thought_details(request,pk)	:
 	try:
 		thoughts_data = thoughts.objects.get(pk=pk)
 	except:
-		return HTTPResponse(status=status.HTTP_404_NOT_FOUND)
+		return Response(status=status.HTTP_404_NOT_FOUND)
 
 	if request.method == 'GET':
 		thoughts_serializer_data = thoughts_serializer(thoughts_data)
-		return JSONResponse(thoughts_serializer_data.data)
+		return Response(thoughts_serializer_data.data)
 						
 	
